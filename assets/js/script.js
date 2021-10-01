@@ -1,3 +1,5 @@
+var hour = moment().hour();
+
 var dateEl = $("#date");
 dateEl.text(moment().format("dddd, MMMM  Mo"));
 
@@ -25,17 +27,15 @@ function handleClick(e) {
     localStorage.setItem(timeAtt, inputBox.value);
 }
 
-function checkLocalStorage() {
-    var key = "10AM";
-    console.log(localStorage.getItem(key));
-}
-
 function onLoad() {
     for(var i = 0; i < localStorage.length; i++) {
         var key = localStorage.key(i);
         var val = localStorage.getItem(key);
         putInProperBox(key, val);
     }
+
+    updateBackgroundColors();
+    setInterval(checkTime, 1000);
 }
 
 function putInProperBox(timeAtt, text) {
@@ -47,4 +47,35 @@ function putInProperBox(timeAtt, text) {
             return false;
         }
     });
+}
+
+function updateBackgroundColors() {
+    $.each(allInputBoxEl, function(i, obj) {
+        var attr = allInputBoxEl[i].getAttribute("data-time");
+        var num = attr.match(/\d/g);
+        num = num.join("");
+
+        if(num < 9) {
+            num += 12;
+        }
+        
+        if(num < hour) {
+            $(obj).css("background-color", "lightgrey");
+        } else if(num == hour) {
+            $(obj).css("background-color", "red");
+        } else {
+            $(obj).css("background-color", "green");
+        }
+    });
+}
+
+// Function that runs every second to see if the hour has changed
+function checkTime() {
+    var currHour = moment().hour();
+
+    if(currHour !== hour) {
+        hour = currHour;
+        dateEl.text(moment().format("dddd, MMMM  Mo"));
+        updateBackgroundColors();
+    }
 }
