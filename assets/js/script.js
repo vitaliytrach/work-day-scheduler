@@ -27,6 +27,7 @@ function handleClick(e) {
     localStorage.setItem(timeAtt, inputBox.value);
 }
 
+// Inital method for when page loads
 function onLoad() {
     for(var i = 0; i < localStorage.length; i++) {
         var key = localStorage.key(i);
